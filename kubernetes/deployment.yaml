@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upspin
+  namespace: upspin
+  labels:
+    app: upspin
+    version: latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upspin
+  template:
+    metadata:
+      name: upspin
+      labels:
+        app: upspin
+        version: latest
+    spec:
+      containers:
+      - name: upspin
+        image: dethsanius/upspinserver:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: upspin-conf-pv
+          mountPath: /upspin
+        ports:
+        - containerPort: 80
+          name: web
+          protocol: TCP
+        - containerPort: 443
+          name: ssl
+          protocol: TCP
+      volumes:
+      - name: upspin-conf-pv
+        persistentVolumeClaim:
+          claimName: upspin-conf-pvc
